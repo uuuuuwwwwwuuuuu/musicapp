@@ -10,7 +10,8 @@ import Animated ,{
     withTiming,
     Easing,
     withSpring,
-    useSharedValue
+    useSharedValue,
+    useDerivedValue
 } from 'react-native-reanimated'
 
 const RegPage = () => {
@@ -31,7 +32,75 @@ const RegPage = () => {
     }
 
     const ALogo = useAnimatedStyle(() => ({
-        top: withSpring(LOGO.top.value, {duration: 2000})
+        top: withSpring(LOGO.top.value, {duration: 2000, dampingRatio: 0.7})
+    }))
+
+    const NOTES = [
+        {
+            vertical: useSharedValue(50),
+            horizontal: useSharedValue(45),
+            scale: useSharedValue(1.1),
+            rotate: useSharedValue(-17)
+        },
+        {
+            vertical: useSharedValue(45),
+            horizontal: useSharedValue(0),
+            scale: useSharedValue(1.7),
+            rotate: useSharedValue(5)
+        },
+        {
+            vertical: useSharedValue(360),
+            horizontal: useSharedValue(0),
+            scale: useSharedValue(1.1),
+            rotate: useSharedValue(-47)
+        },
+        {
+            vertical: useSharedValue(260),
+            horizontal: useSharedValue(110),
+            scale: useSharedValue(2),
+            rotate: useSharedValue(37)
+        },
+    ]
+
+    const rotateValue1 = useDerivedValue(() => `${NOTES[0].rotate.value}deg`)
+    const rotateValue2 = useDerivedValue(() => `${NOTES[1].rotate.value}deg`)
+    const rotateValue3 = useDerivedValue(() => `${NOTES[2].rotate.value}deg`)
+    const rotateValue4 = useDerivedValue(() => `${NOTES[3].rotate.value}deg`)
+    
+    const ANote1 = useAnimatedStyle(() => ({
+        top: withSpring(NOTES[0].vertical.value, {duration: 2000, dampingRatio: 0.7}),
+        left: withSpring(NOTES[0].horizontal.value, {duration: 2000, dampingRatio: 0.7}),
+        transform: [
+            {scale: withTiming(NOTES[0].scale.value, {duration: 500})},
+            {rotate: withSpring(rotateValue1.value, {duration: 2000, dampingRatio: 0.7})}
+        ],
+    }))
+    
+    const ANote2 = useAnimatedStyle(() => ({
+        top: withSpring(NOTES[1].vertical.value, {duration: 2000, dampingRatio: 0.7}),
+        right: withSpring(NOTES[1].horizontal.value, {duration: 2000, dampingRatio: 0.7}),
+        transform: [
+            {scale: withTiming(NOTES[1].scale.value, {duration: 500})},
+            {rotate: withSpring(rotateValue2.value, {duration: 2000, dampingRatio: 0.7})}
+        ],
+    }))
+
+    const ANote3 = useAnimatedStyle(() => ({
+        bottom: withSpring(NOTES[2].vertical.value, {duration: 2000, dampingRatio: 0.7}),
+        left: withSpring(NOTES[2].horizontal.value, {duration: 2000, dampingRatio: 0.7}),
+        transform: [
+            {scale: withTiming(NOTES[2].scale.value, {duration: 500})},
+            {rotate: withSpring(rotateValue3.value, {duration: 2000, dampingRatio: 0.7})}
+        ],
+    }))
+
+    const ANote4 = useAnimatedStyle(() => ({
+        bottom: withSpring(NOTES[3].vertical.value, {duration: 2000, dampingRatio: 0.7}),
+        right: withSpring(NOTES[3].horizontal.value, {duration: 2000, dampingRatio: 0.7}),
+        transform: [
+            {scale: withTiming(NOTES[3].scale.value, {duration: 500})},
+            {rotate: withSpring(rotateValue4.value, {duration: 2000, dampingRatio: 0.7})}
+        ],
     }))
 
     useEffect(() => {
@@ -53,7 +122,8 @@ const RegPage = () => {
         buttonsWrapper: {
             width: 250,
             height: 130,
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            zIndex: 5
         },
         signInBtn: {
             width: '100%',
@@ -79,10 +149,19 @@ const RegPage = () => {
         },
         logo: {
             position: 'absolute',
+            zIndex: 2
         },
-        note: {
+        smallNote: {
             position: 'absolute',
-            transform: [{scale: 0.8}]
+            width: 83,
+            height: 133,
+            zIndex: 3
+        },
+        bigNote: {
+            position: 'absolute',
+            width: 140,
+            height: 165,
+            zIndex: 1
         }
     });
 
@@ -104,10 +183,10 @@ const RegPage = () => {
                     </View>
                 </TouchableWithoutFeedback>
             </Animated.View>
-            {/* <Image style={s.note} source={require('../assets/SmallNote.png')}/>
-            <Image style={s.note} source={require('../assets/BigNote.png')}/>
-            <Image style={s.note} source={require('../assets/SmallNote.png')}/>
-            <Image style={s.note} source={require('../assets/BigNote.png')}/> */}
+            <Animated.Image style={[s.smallNote, ANote1]} source={require('../assets/SmallNote.png')} blurRadius={10}/>
+            <Animated.Image style={[s.bigNote, ANote2]} source={require('../assets/BigNote.png')} blurRadius={7}/>
+            <Animated.Image style={[s.bigNote, ANote3]} source={require('../assets/BigNote.png')} blurRadius={8}/>
+            <Animated.Image style={[s.smallNote, ANote4]} source={require('../assets/SmallNote.png')} blurRadius={10}/>
         </View>
     );
 };
