@@ -74,6 +74,7 @@ const RegPage = () => {
             {scale: withTiming(NOTES[0].scale.value, {duration: 500})},
             {rotate: withSpring(rotateValue1.value, {duration: 2000, dampingRatio: 0.7})}
         ],
+        zIndex: 1
     }))
     
     const ANote2 = useAnimatedStyle(() => ({
@@ -83,6 +84,7 @@ const RegPage = () => {
             {scale: withTiming(NOTES[1].scale.value, {duration: 500})},
             {rotate: withSpring(rotateValue2.value, {duration: 2000, dampingRatio: 0.7})}
         ],
+        zIndex: 1
     }))
 
     const ANote3 = useAnimatedStyle(() => ({
@@ -92,6 +94,7 @@ const RegPage = () => {
             {scale: withTiming(NOTES[2].scale.value, {duration: 500})},
             {rotate: withSpring(rotateValue3.value, {duration: 2000, dampingRatio: 0.7})}
         ],
+        zIndex: 1
     }))
 
     const ANote4 = useAnimatedStyle(() => ({
@@ -101,12 +104,35 @@ const RegPage = () => {
             {scale: withTiming(NOTES[3].scale.value, {duration: 500})},
             {rotate: withSpring(rotateValue4.value, {duration: 2000, dampingRatio: 0.7})}
         ],
+        zIndex: 3
     }))
 
     useEffect(() => {
         if (regState !== 'idle') {
             BUTTONS.opacity.value = 0;
             LOGO.top.value = 0;
+        }
+
+        if (regState === 'auth') {
+            NOTES[0].vertical.value = 0;
+            NOTES[0].horizontal.value = 100;
+            NOTES[0].scale.value = 2.2;
+            NOTES[0].rotate.value = -44;
+            
+            NOTES[1].vertical.value = 60;
+            NOTES[1].horizontal.value = -110;
+            NOTES[1].scale.value = 2.2;
+            NOTES[1].rotate.value = 27;
+            
+            NOTES[2].vertical.value = 30;
+            NOTES[2].horizontal.value = -40;
+            NOTES[2].scale.value = 1.5;
+            NOTES[2].rotate.value = 5;
+            
+            NOTES[3].vertical.value = 30;
+            NOTES[3].horizontal.value = -10;
+            NOTES[3].scale.value = 3;
+            NOTES[3].rotate.value = -34;
         }
     }, [regState])
 
@@ -155,13 +181,11 @@ const RegPage = () => {
             position: 'absolute',
             width: 83,
             height: 133,
-            zIndex: 3
         },
         bigNote: {
             position: 'absolute',
             width: 140,
             height: 165,
-            zIndex: 1
         }
     });
 
@@ -183,7 +207,7 @@ const RegPage = () => {
                     </View>
                 </TouchableWithoutFeedback>
             </Animated.View>
-            <Animated.Image style={[s.smallNote, ANote1]} source={require('../assets/SmallNote.png')} blurRadius={10}/>
+            <Animated.Image style={[s.smallNote, ANote1]} source={require('../assets/SmallNote.png')} blurRadius={7}/>
             <Animated.Image style={[s.bigNote, ANote2]} source={require('../assets/BigNote.png')} blurRadius={7}/>
             <Animated.Image style={[s.bigNote, ANote3]} source={require('../assets/BigNote.png')} blurRadius={8}/>
             <Animated.Image style={[s.smallNote, ANote4]} source={require('../assets/SmallNote.png')} blurRadius={10}/>
