@@ -134,6 +134,28 @@ const RegPage = () => {
             NOTES[3].scale.value = 3;
             NOTES[3].rotate.value = -34;
         }
+
+        if (regState === 'reg') {
+            NOTES[0].vertical.value = 20;
+            NOTES[0].horizontal.value = 50;
+            NOTES[0].scale.value = 2.5;
+            NOTES[0].rotate.value = 30;
+            
+            NOTES[1].vertical.value = 60;
+            NOTES[1].horizontal.value = 0;
+            NOTES[1].scale.value = 1.75;
+            NOTES[1].rotate.value = -23;
+            
+            NOTES[2].vertical.value = 100;
+            NOTES[2].horizontal.value = -40;
+            NOTES[2].scale.value = 2;
+            NOTES[2].rotate.value = 40;
+            
+            NOTES[3].vertical.value = 40;
+            NOTES[3].horizontal.value = 40;
+            NOTES[3].scale.value = 2;
+            NOTES[3].rotate.value = -15;
+        }
     }, [regState])
 
     const s = StyleSheet.create({
