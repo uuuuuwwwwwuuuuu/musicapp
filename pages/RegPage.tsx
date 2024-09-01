@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableWithoutFeedback, Image } from "react-native";
 
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState } from "react";
 import { useAppSelector } from "../hook";
 import Logo from "../components/logo";
 import { Dimensions } from 'react-native';
@@ -11,21 +11,63 @@ import Animated ,{
     Easing,
     withSpring,
     useSharedValue,
-    useDerivedValue
+    useDerivedValue,
+    runOnJS
 } from 'react-native-reanimated'
 
 const RegPage = () => {
     const {colors, fonts} = useAppSelector(state => state.colors);
     const [regState, setRegState] = useState<'idle' | 'auth' | 'reg'>('idle');
+    const [buttons, setButtons] = useState<React.ReactElement | null>(null);
+    const [isAnimationEnd, setIsAnimationEnd] = useState(false);
+
     const windowHeight = Dimensions.get('window').height;
+    const windowWidth = Dimensions.get('window').width;
 
     const BUTTONS = {
         opacity: useSharedValue(1)
     }
     
     const AButtons = useAnimatedStyle(() => ({
-        opacity: withTiming(BUTTONS.opacity.value, {duration: 500, easing: Easing.ease})
-    }))
+        opacity: withTiming(BUTTONS.opacity.value, {duration: 250, easing: Easing.ease}, (isFinish) => {
+            if (isFinish) {
+                runOnJS(setIsAnimationEnd)(true)
+                BUTTONS.opacity.value = 1
+            }
+        })
+    }));
+
+    useEffect(() => {
+        if (isAnimationEnd) {
+            if (regState === 'idle') {
+                setButtons(
+                    <Animated.View style={[s.buttonsWrapper, AButtons]}>
+                        <TouchableWithoutFeedback onPress={() => setRegState('auth')}>
+                            <View style={s.signInBtn}>
+                                <Text style={s.textB}>Войти</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={() => setRegState('reg')}>
+                            <View style={s.regBtn}>
+                                <Text style={s.textB}>Зарегистрироваться</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </Animated.View>
+                )
+            } else {
+                setButtons(
+                    <Animated.View style={[s.buttonsWrapper, AButtons]}>
+                        <TouchableWithoutFeedback onPress={() => setRegState('idle')}>
+                            <View style={s.regBtn}>
+                                    <Text style={s.textB}>Назад</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </Animated.View>
+                )
+            }
+        }
+        setIsAnimationEnd(false)
+    }, [regState, isAnimationEnd])
 
     const LOGO = {
         top: useSharedValue(windowHeight / 2 - 100)
@@ -111,11 +153,37 @@ const RegPage = () => {
         if (regState !== 'idle') {
             BUTTONS.opacity.value = 0;
             LOGO.top.value = 0;
+        } else {
+            BUTTONS.opacity.value = 0;
+            LOGO.top.value = windowHeight / 2 - 100;
+        }
+
+        if (regState === 'idle') {
+
+            NOTES[0].vertical.value = 50;
+            NOTES[0].horizontal.value = 45;
+            NOTES[0].scale.value = 1.1;
+            NOTES[0].rotate.value = -17;
+            
+            NOTES[1].vertical.value = 45;
+            NOTES[1].horizontal.value = 0;
+            NOTES[1].scale.value = 1.7;
+            NOTES[1].rotate.value = 5;
+            
+            NOTES[2].vertical.value = 360;
+            NOTES[2].horizontal.value = 0;
+            NOTES[2].scale.value = 1.1;
+            NOTES[2].rotate.value = -47;
+            
+            NOTES[3].vertical.value = 260;
+            NOTES[3].horizontal.value = 110;
+            NOTES[3].scale.value = 2;
+            NOTES[3].rotate.value = 37;
         }
 
         if (regState === 'auth') {
             NOTES[0].vertical.value = 0;
-            NOTES[0].horizontal.value = 100;
+            NOTES[0].horizontal.value = 50;
             NOTES[0].scale.value = 2.2;
             NOTES[0].rotate.value = -44;
             
@@ -156,7 +224,7 @@ const RegPage = () => {
             NOTES[3].scale.value = 2;
             NOTES[3].rotate.value = -15;
         }
-    }, [regState])
+    }, [regState]);
 
     const s = StyleSheet.create({
         wrapper: {
@@ -169,7 +237,7 @@ const RegPage = () => {
         },
         buttonsWrapper: {
             width: 250,
-            height: 130,
+            height: regState === 'idle' ? 130 : 55,
             justifyContent: 'space-between',
             zIndex: 5
         },
@@ -208,27 +276,45 @@ const RegPage = () => {
             position: 'absolute',
             width: 140,
             height: 165,
+        },
+        contentWrapper: {
+            width: 360,
+            height: 510,
+            backgroundColor: colors.bgSecondColor,
+            zIndex: 5,
+            position: 'absolute',
+            top: windowHeight / 2 - 305,
+            borderRadius: 10
         }
     });
 
+    const CONTENT_BOX = {
+        left: useSharedValue(-520)
+    }
+
+    const AContentBox = useAnimatedStyle(() => ({
+        left: withSpring(CONTENT_BOX.left.value, {duration: 2000, dampingRatio: 0.7})
+    }));
+
+    useEffect(() => {
+        if (regState === 'idle') {
+            CONTENT_BOX.left.value = -520
+        } else if (regState === 'auth') {
+            CONTENT_BOX.left.value = windowWidth / 2 - 180
+        }
+    }, [regState])
 
     return (
         <View style={s.wrapper}>
             <Animated.View style={[s.logo, ALogo]}>
                 <Logo />
             </Animated.View>
-            <Animated.View style={[s.buttonsWrapper, AButtons]}>
-                <TouchableWithoutFeedback onPress={() => setRegState('auth')}>
-                    <View style={s.signInBtn}>
-                        <Text style={s.textB}>Войти</Text>
-                    </View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={() => setRegState('reg')}>
-                    <View style={s.regBtn}>
-                        <Text style={s.textB}>Зарегистрироваться</Text>
-                    </View>
-                </TouchableWithoutFeedback>
+            <Animated.View style={[s.contentWrapper, AContentBox]}>
+
             </Animated.View>
+
+            {buttons}
+            
             <Animated.Image style={[s.smallNote, ANote1]} source={require('../assets/SmallNote.png')} blurRadius={7}/>
             <Animated.Image style={[s.bigNote, ANote2]} source={require('../assets/BigNote.png')} blurRadius={7}/>
             <Animated.Image style={[s.bigNote, ANote3]} source={require('../assets/BigNote.png')} blurRadius={8}/>
