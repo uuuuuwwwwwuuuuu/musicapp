@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableWithoutFeedback, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableWithoutFeedback, TextInput } from "react-native";
 
 import React, {useEffect, useState } from "react";
 import { useAppSelector } from "../hook";
@@ -284,33 +284,126 @@ const RegPage = () => {
             zIndex: 5,
             position: 'absolute',
             top: windowHeight / 2 - 305,
-            borderRadius: 10
+            borderRadius: 10,
+            paddingVertical: 40,
+            paddingHorizontal: 20,
+            alignItems: 'center',
+            justifyContent: 'space-between'
+        },
+        bigText: {
+            fontFamily: fonts.rubicS,
+            fontSize: 24,
+            color: colors.contentMain,
+            textAlign: 'center'
+        },
+        infoText: {
+            fontSize: 14,
+            fontFamily: fonts.rubicR,
+            color: colors.contentDisable,
+            textAlign: 'center'
+        },
+        inputsWrapper: {
+            width: '100%',
+            justifyContent: 'space-between'
+        },
+        input: {
+            backgroundColor: colors.bgInputColor,
+            paddingVertical: 15,
+            paddingHorizontal: 20,
+            borderRadius: 5,
+            color: colors.contentMain,
+            fontSize: 16,
+            fontFamily: fonts.rubicM
         }
     });
 
-    const CONTENT_BOX = {
-        left: useSharedValue(-520)
+    const CONTENT_BOXES = {
+        left: useSharedValue(-520),
+        right: useSharedValue(-520)
     }
 
-    const AContentBox = useAnimatedStyle(() => ({
-        left: withSpring(CONTENT_BOX.left.value, {duration: 2000, dampingRatio: 0.7})
+    const AAuthBox = useAnimatedStyle(() => ({
+        left: withSpring(CONTENT_BOXES.left.value, {duration: 2000, dampingRatio: 0.7})
     }));
+
+    const ARegBox = useAnimatedStyle(() => ({
+        right: withSpring(CONTENT_BOXES.right.value, {duration: 2000, dampingRatio: 0.7})
+    }))
 
     useEffect(() => {
         if (regState === 'idle') {
-            CONTENT_BOX.left.value = -520
+            CONTENT_BOXES.left.value = -520;
+            CONTENT_BOXES.right.value = -520;
+
         } else if (regState === 'auth') {
-            CONTENT_BOX.left.value = windowWidth / 2 - 180
+            CONTENT_BOXES.left.value = windowWidth / 2 - 180;
+            CONTENT_BOXES.right.value = -520;
+        } else {
+            CONTENT_BOXES.left.value = -520;
+            CONTENT_BOXES.right.value = windowWidth / 2 - 180;
         }
-    }, [regState])
+    }, [regState]);
 
     return (
         <View style={s.wrapper}>
             <Animated.View style={[s.logo, ALogo]}>
                 <Logo />
             </Animated.View>
-            <Animated.View style={[s.contentWrapper, AContentBox]}>
-
+            <Animated.View style={[s.contentWrapper, AAuthBox]}>
+                <Text style={s.bigText}>Войти в <Text style={{color: colors.accent}}>Brooklyn</Text></Text>
+                <View style={[s.inputsWrapper, {height: 122}]}>
+                    <TextInput 
+                        placeholder="Имя пользователя"
+                        placeholderTextColor={colors.contentDisable} 
+                        style={s.input}></TextInput>
+                    <TextInput 
+                        placeholder="Пароль"
+                        placeholderTextColor={colors.contentDisable} 
+                        style={s.input}></TextInput>
+                </View>
+                <View>
+                    <Text style={s.infoText}>{"Для входа в систему используется ваша учётная запись в Brooklyn\nЕсли у вас нет аккаунта вы можете зарегистрироваться "}
+                    <Text onPress={() => setRegState('reg')} style={{color: colors.accent}}>здесь</Text></Text>
+                </View>
+                <View style={{width: 250, height: 130, justifyContent: 'space-between'}}>
+                    <TouchableWithoutFeedback>
+                        <View style={s.signInBtn}>
+                            <Text style={s.textB}>Войти</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback>
+                        <View style={s.regBtn}>
+                            <Text style={s.textB}>Вставить API ключ</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </View>
+            </Animated.View>
+            <Animated.View style={[s.contentWrapper, ARegBox]}>
+                <Text style={s.bigText}>{'Зарегистрироваться\nв '}<Text style={{color: colors.accent}}>Brooklyn</Text></Text>
+                <View style={[s.inputsWrapper, {height: 195}]}>
+                    <TextInput 
+                        placeholder="Имя пользователя"
+                        placeholderTextColor={colors.contentDisable} 
+                        style={s.input}></TextInput>
+                    <TextInput 
+                        placeholder="Пароль"
+                        placeholderTextColor={colors.contentDisable} 
+                        style={s.input}></TextInput>
+                    <TextInput 
+                        placeholder="Электронная почта"
+                        placeholderTextColor={colors.contentDisable} 
+                        style={s.input}></TextInput>
+                </View>
+                <View>
+                    <Text style={s.infoText}>{[<Text style={{color: colors.error}}>{"Не указывайте свои настоящие данные!!!\n"}</Text>, "У приложения нет защиты от кибервзлома\n", "Есть аккаунт? ", <Text onPress={() => setRegState('auth')} style={{color: colors.accent}}>Войдите здесь!</Text>]}</Text>
+                </View>
+                <View style={{width: 250, height: 55, justifyContent: 'space-between'}}>
+                    <TouchableWithoutFeedback>
+                        <View style={s.signInBtn}>
+                            <Text style={s.textB}>Зарегистрироваться</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </View>
             </Animated.View>
 
             {buttons}
