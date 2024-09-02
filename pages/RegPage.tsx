@@ -395,7 +395,7 @@ const RegPage = () => {
                         style={s.input}></TextInput>
                 </View>
                 <View>
-                    <Text style={s.infoText}>{[<Text style={{color: colors.error}}>{"Не указывайте свои настоящие данные!!!\n"}</Text>, "У приложения нет защиты от кибервзлома\n", "Есть аккаунт? ", <Text onPress={() => setRegState('auth')} style={{color: colors.accent}}>Войдите здесь!</Text>]}</Text>
+                    <Text style={s.infoText}><Text style={{color: colors.error}}>{"Не указывайте свои настоящие данные!!!\n"}</Text> У приложения нет защиты от кибервзлома Есть аккаунт?  <Text onPress={() => setRegState('auth')} style={{color: colors.accent}}>Войдите здесь!</Text></Text>
                 </View>
                 <View style={{width: 250, height: 55, justifyContent: 'space-between'}}>
                     <TouchableWithoutFeedback>
