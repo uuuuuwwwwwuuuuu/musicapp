@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableWithoutFeedback, TextInput } from "react-native";
 
-import React, {useEffect, useState } from "react";
+import React, {ChangeEvent, useEffect, useState } from "react";
 import { useAppSelector } from "../hook";
 import Logo from "../components/logo";
 import { Dimensions } from 'react-native';
@@ -20,6 +20,7 @@ const RegPage = () => {
     const [regState, setRegState] = useState<'idle' | 'auth' | 'reg'>('idle');
     const [buttons, setButtons] = useState<React.ReactElement | null>(null);
     const [isAnimationEnd, setIsAnimationEnd] = useState(false);
+    const [isAPIKey, setIsAPIKey] = useState(false);
 
     const windowHeight = Dimensions.get('window').height;
     const windowWidth = Dimensions.get('window').width;
@@ -344,6 +345,10 @@ const RegPage = () => {
         }
     }, [regState]);
 
+    const [authInputValues, setAuthInputValues] = useState({username: '', password: ''});
+    const [regInputValues, setRegInputValues] = useState({username: '', password: '', email: ''});
+    const [yandexData, setYandexData] = useState({token: '', uuid: 0});
+
     return (
         <View style={s.wrapper}>
             <Animated.View style={[s.logo, ALogo]}>
@@ -355,25 +360,24 @@ const RegPage = () => {
                     <TextInput 
                         placeholder="Имя пользователя"
                         placeholderTextColor={colors.contentDisable} 
-                        style={s.input}></TextInput>
+                        style={s.input}
+                        onChangeText={username => setAuthInputValues(ps => ({...ps, username}))}
+                        defaultValue={authInputValues.username}></TextInput>
                     <TextInput 
                         placeholder="Пароль"
                         placeholderTextColor={colors.contentDisable} 
-                        style={s.input}></TextInput>
+                        style={s.input}
+                        onChangeText={password => setAuthInputValues(ps => ({...ps, password}))}
+                        defaultValue={authInputValues.password}></TextInput>
                 </View>
                 <View>
                     <Text style={s.infoText}>{"Для входа в систему используется ваша учётная запись в Brooklyn\nЕсли у вас нет аккаунта вы можете зарегистрироваться "}
                     <Text onPress={() => setRegState('reg')} style={{color: colors.accent}}>здесь</Text></Text>
                 </View>
-                <View style={{width: 250, height: 130, justifyContent: 'space-between'}}>
+                <View style={{width: 250, height: 55, justifyContent: 'space-between'}}>
                     <TouchableWithoutFeedback>
                         <View style={s.signInBtn}>
                             <Text style={s.textB}>Войти</Text>
-                        </View>
-                    </TouchableWithoutFeedback>
-                    <TouchableWithoutFeedback>
-                        <View style={s.regBtn}>
-                            <Text style={s.textB}>Вставить API ключ</Text>
                         </View>
                     </TouchableWithoutFeedback>
                 </View>
@@ -384,15 +388,21 @@ const RegPage = () => {
                     <TextInput 
                         placeholder="Имя пользователя"
                         placeholderTextColor={colors.contentDisable} 
-                        style={s.input}></TextInput>
+                        style={s.input}
+                        onChangeText={username => setRegInputValues(ps => ({...ps, username}))}
+                        defaultValue={regInputValues.username}></TextInput>
                     <TextInput 
                         placeholder="Пароль"
                         placeholderTextColor={colors.contentDisable} 
-                        style={s.input}></TextInput>
+                        style={s.input}
+                        onChangeText={password => setRegInputValues(ps => ({...ps, password}))}
+                        defaultValue={regInputValues.password}></TextInput>
                     <TextInput 
                         placeholder="Электронная почта"
                         placeholderTextColor={colors.contentDisable} 
-                        style={s.input}></TextInput>
+                        style={s.input}
+                        onChangeText={email => setRegInputValues(ps => ({...ps, email}))}
+                        defaultValue={regInputValues.email}></TextInput>
                 </View>
                 <View>
                     <Text style={s.infoText}><Text style={{color: colors.error}}>{"Не указывайте свои настоящие данные!!!\n"}</Text> У приложения нет защиты от кибервзлома Есть аккаунт?  <Text onPress={() => setRegState('auth')} style={{color: colors.accent}}>Войдите здесь!</Text></Text>

@@ -1,12 +1,19 @@
 import { createReducer } from "@reduxjs/toolkit";
+import YM from "../../yandex/YandexMusic";
+import initClient from "./actionsYandex";
 
 interface IState {
-    uuid: number,
-    token: string
+    YMClient: YM | null
 }
 
 const initialState: IState = {
-    uuid: 0,
-    token: ''
-
+    YMClient: null
 }
+
+const yandexReducer = createReducer(initialState, (builder) => {
+    builder.addCase(initClient, (state, {payload}) => {
+        state.YMClient = new YM(payload.token, payload.uuid)
+    })
+})
+
+export default yandexReducer

@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import colorsReducer from "./colorsAndFonts/reducerColorsAndFonts";
+import yandexReducer from "./yandexClient/reducerYandex";
 
 const store = configureStore({
     reducer: {
-        colors: colorsReducer
+        colors: colorsReducer,
+        yandex: yandexReducer
     }
 })
 
